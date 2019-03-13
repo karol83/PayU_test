@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -o errexit
+set -o nounset
+
+
+celery -A payu_test_payments.taskapp worker -l INFO
