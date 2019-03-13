@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Are you sure you want to buy: </h2>
+  <h1>{{ object.name }}</h1>
+  <br>
+  <h4>Which can be described as: {{ object.desc }}</h4>
+  <br>
+  <h4>At the price of: {{ object.get_price }}</h4>
+  <a href="{% url 'home' %}" class="btn btn-grey">No, take me back!</a>
+  <a href="#" class="btn btn-success">Yes!</a>
+{% endblock %}

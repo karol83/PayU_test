@@ -16,6 +16,10 @@ class Product(models.Model):
     def __str__(self):
         return f"{self.name}: {self.desc} - ${self.price} | {self.is_available}"
 
+    def get_price(self):
+        price = self.price/100
+        return price
+
 
 PAYMENT_STATUS = (
     ('NEW', _('NEW')),

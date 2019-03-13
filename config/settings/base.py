@@ -270,3 +270,4 @@ SOCIALACCOUNT_ADAPTER = 'payu_test_payments.users.adapters.SocialAccountAdapter'
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+PAYU_POS_ID = env('PAYU_POS_ID_VALUE')
