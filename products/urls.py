@@ -1,10 +1,21 @@
 from django.urls import path, include
 
-from .views import ProductDetailView
+from .views import ProductDetailView, buy_click, notify_payment_view
 
 urlpatterns = [
     path(
         'confirm-purchase/<pk>/',
         ProductDetailView.as_view(),
-        name='confirm-purchase'),
+        name='confirm-purchase'
+    ),
+    path(
+        'buy/<product_id>/',
+        buy_click,
+        name='buy-click',
+    ),
+    path(
+        'notify',
+        notify_payment_view,
+        name='notify-payment',
+    )
 ]

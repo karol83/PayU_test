@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import uuid
+
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.conf import settings
@@ -42,10 +44,12 @@ class Order(models.Model):
         verbose_name=_(u'Product name'),
         on_delete=models.CASCADE,
     )
-    external_id = models.UUIDField(
-        verbose_name=_(u'Transaction id')
+    order_id = models.UUIDField(
+        verbose_name=_(u'Transaction id'),
+        editable=False,
+        default=uuid.uuid4
     )
-    curtomer_ip = models.GenericIPAddressField(
+    customer_ip = models.GenericIPAddressField(
         _(u'Client Ip Address'),
         default='127.0.0.1',
     )

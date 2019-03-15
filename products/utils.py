@@ -4,6 +4,8 @@ import logging
 import json
 import redis
 
+from requests import Request, Session
+
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.urls import reverse
@@ -15,7 +17,7 @@ CURRENCY_CODE = "PLN"
 
 
 def request_payu_token(
-    url='https://private-anon-55ed93c2f3-payu21.apiary-proxy.com/pl/standard/user/oauth/authorize',
+    url='https://secure.snd.payu.com/pl/standard/user/oauth/authorize',
     client_id=settings.PAYU_CLIENT_ID,
     client_secret=settings.PAYU_CLIENT_SECRET
 ):
@@ -29,12 +31,13 @@ def request_payu_token(
     logger.info('Requesting PayU TOKEN!')
     payload = {
         'grant_type': 'client_credentials',
+        # 'client_id': client_id,
         'client_id': client_id,
         'client_secret': client_secret
     }
 
     response = requests.post(url, payload)
-    logger.info(f'The response is: {response}')
+    logger.info(f'The response is: {response} {response.status_code} {response.content}')
 
     if response.status_code == 200:
         logger.info(f'replied with {response.status_code}')
@@ -42,12 +45,89 @@ def request_payu_token(
             data = json.loads(response.text)
         except ValueError:
             return None
-        logger.info(f'The access token is {data.get("access_token", None)}')
 
-        return data.get("access_token")
+
+        return data.get('access_token')
     else:
         logger.debug(f'Response status_code == {response.status_code}')
         return None
+
+
+def send_payu_order(
+    order,
+    request,
+    url='https://secure.snd.payu.com/api/v2_1/orders',
+):
+    logger.debug('creating new order')
+    notify_url = Site.objects.get_current().domain + reverse('notify-payment')
+
+    payload = json.dumps({
+        "notifyUrl": notify_url,
+        "customerIp": order.customer_ip,
+        "merchantPosId": str(settings.PAYU_POS_ID),
+        "description": order.product.desc,
+        "currencyCode": CURRENCY_CODE,
+        "totalAmount": order.product.price,
+        "extOrderId": str(order.order_id),
+        "buyer": {
+            "email": request.user.email,
+            "firstName": request.user.first_name,
+            "lastName": request.user.last_name
+        },
+        "products": [
+            {
+                "name": order.product.name,
+                "unitPrice": order.product.price,
+                "quantity": "1"
+            }
+
+        ],
+
+    })
+
+    headers = {
+        "content-type": "application/json",
+        "Authorization": "Bearer {0}".format((get_payu_token().decode('utf-8'))),
+    }
+
+    s = Session()
+
+    req = Request('POST', url=url, data=payload, headers=headers)
+    prepped = req.prepare()
+
+    response = requests.post(
+        url=url,
+        data=payload,
+        headers=headers,
+        allow_redirects=False
+    )
+
+    if response.status_code == 302:
+
+        try:
+            data = json.loads(response.text)
+            url = data.get('redirectUri')
+            logger.debug(f"redirectUr == {url} and it's status {data.get('status')}")
+
+            if url:
+                return url
+            else:
+                logger.error(
+                    u"Invalid PayU response, no redirectUri found."
+                )
+        except ValueError:
+            logger.error(
+                u"Invalid PayU response."
+            )
+    if response.status_code == 403:
+        logger.error('Not allowed on PayU server - error 403! Check your configuration!')
+
+    else:
+        logger.error(
+            f"Invalid PayU order status code {response.status_code}"
+        )
+
+    return None
 
 
 def get_payu_token():
@@ -73,62 +153,3 @@ def get_payu_token():
         else:
             return None
     return access_token
-
-
-def create_new_order(
-    order,
-    url='https://private-anon-55ed93c2f3-payu21.apiary-mock.com/api/v2_1/orders/',
-):
-    logger.debug('creating new order')
-    notify_url = Site.objects.get_current().domain + reverse('payment-confirmed')
-
-    payload = json.dumps({
-        "notifyUrl": notify_url,
-        "customerIp": order.customer_ip,
-        "merchantPosId": settings.PAYU_POS_ID,
-        "description": order.plan.desc,
-        "currencyCode": CURRENCY_CODE,
-        "totalAmount": order.plan.price,
-        "products": [
-            {
-                "name": order.plan.name,
-                "unitPrice": order.plan.price,
-                "quantity": "1"
-            }
-        ]
-    })
-
-    headers = {
-        'Content-Type':'application/json',
-        'Authorization':f'Bearer'+{get_payu_token()}
-    }
-
-    response = requests.post(
-        url,
-        payload=payload,
-        headers=headers,
-        allow_redirects=False
-    )
-
-    if response.status_code == 302:
-        try:
-            data = json.loads(response.text)
-            url = data.get('redirectUri')
-            logger.debug(f'redirectUr == {url}')
-
-            if url:
-                return url
-            else:
-                logger.error(
-                    u"Invalid PayU response, no redirectUri found."
-                )
-        except ValueError:
-            logger.error(
-                u"Invalid PayU response."
-            )
-    else:
-        logger.error(
-            f"Invalid PayU order status code {response.status_code}"
-        )
-
-    return None

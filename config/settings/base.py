@@ -1,7 +1,6 @@
 """
 Base settings to build other settings files upon.
 """
-
 import environ
 
 ROOT_DIR = environ.Path(__file__) - 3  # (payu_test_payments/config/settings/base.py - 3 = payu_test_payments/)
@@ -271,3 +270,5 @@ SOCIALACCOUNT_ADAPTER = 'payu_test_payments.users.adapters.SocialAccountAdapter'
 # Your stuff...
 # ------------------------------------------------------------------------------
 PAYU_POS_ID = env('PAYU_POS_ID_VALUE')
+PAYU_CLIENT_ID = env('PAYU_CLIENT_ID')
+PAYU_CLIENT_SECRET = env('PAYU_CLIENT_SECRET')

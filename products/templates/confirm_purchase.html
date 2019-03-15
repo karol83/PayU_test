@@ -8,5 +8,5 @@
   <br>
   <h4>At the price of: {{ object.get_price }}</h4>
   <a href="{% url 'home' %}" class="btn btn-grey">No, take me back!</a>
-  <a href="#" class="btn btn-success">Yes!</a>
+  <a href="{% url 'buy-click' object.pk %}" class="btn btn-success">Yes!</a>
 {% endblock %}
