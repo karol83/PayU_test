@@ -57,6 +57,5 @@ def buy_click(request, product_id):
 def notify_payment_view(request):
 
     logger.debug('notify_payment_view')
-    print('notify_payment_view!!')
 
     pass

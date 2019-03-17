@@ -31,7 +31,6 @@ def request_payu_token(
     logger.info('Requesting PayU TOKEN!')
     payload = {
         'grant_type': 'client_credentials',
-        # 'client_id': client_id,
         'client_id': client_id,
         'client_secret': client_secret
     }
@@ -45,8 +44,6 @@ def request_payu_token(
             data = json.loads(response.text)
         except ValueError:
             return None
-
-
         return data.get('access_token')
     else:
         logger.debug(f'Response status_code == {response.status_code}')
@@ -85,15 +82,15 @@ def send_payu_order(
 
     })
 
+    if type(get_payu_token()) == 'string':
+        authorization_bearer = f'Bearer {get_payu_token()}'
+    else:
+        authorization_bearer = f'Bearer {get_payu_token().decode("utf-8")}'
+
     headers = {
         "content-type": "application/json",
-        "Authorization": "Bearer {0}".format((get_payu_token().decode('utf-8'))),
+        "Authorization": authorization_bearer,
     }
-
-    s = Session()
-
-    req = Request('POST', url=url, data=payload, headers=headers)
-    prepped = req.prepare()
 
     response = requests.post(
         url=url,
@@ -122,9 +119,11 @@ def send_payu_order(
     if response.status_code == 403:
         logger.error('Not allowed on PayU server - error 403! Check your configuration!')
 
+    if response.status_code == 401:
+        logger.error('Error 401, Check your token, authorization seems to be the problem.')
     else:
         logger.error(
-            f"Invalid PayU order status code {response.status_code}"
+            f"Invalid PayU order status code {response.status_code}, check your code."
         )
 
     return None
