@@ -1,4 +1,6 @@
 import logging
+import json
+
 from ipware import get_client_ip
 
 from django.shortcuts import render
@@ -6,9 +8,11 @@ from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Product, Order
 from .utils import send_payu_order
+from . import serializers
 
 logger = logging.getLogger(__name__)
 
@@ -54,8 +58,19 @@ def buy_click(request, product_id):
         raise Http404()
 
 
+@csrf_exempt
 def notify_payment_view(request):
-
+    print('')
     logger.debug('notify_payment_view')
+    if request.method == 'POST':
+        print(f'the request POST body == {request.body}')
+        serializer = serializers.StatusSerializer(
+            data=json.loads(request.body))
 
-    pass
+
+def purchases(request):
+
+    logger.debug('purchases view')
+    my_orders = Order.objects.all().filter(user=request.user).order_by('-id')
+
+    return render(request, "purchase_history.html", context={'orders': my_orders})

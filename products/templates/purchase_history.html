@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if orders %}
+    <h2>Your purchases history:</h2>
+    {% for order in orders %}
+      {{ order.get_product_name }} : {{ order.get_product_price }}, id:{{ order.id }}, status: {{ order.status_data }} {{ order.status }}<br>
+    {% endfor %}
+  {% else %}
+    <h3>You don't seem to have any orders yet ...</h3>
+  {% endif %}
+{% endblock %}

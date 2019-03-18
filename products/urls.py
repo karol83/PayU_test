@@ -1,6 +1,7 @@
 from django.urls import path, include
 
-from .views import ProductDetailView, buy_click, notify_payment_view
+from .views import ProductDetailView, \
+    buy_click, notify_payment_view, purchases
 
 urlpatterns = [
     path(
@@ -16,6 +17,11 @@ urlpatterns = [
     path(
         'notify',
         notify_payment_view,
-        name='notify-payment',
-    )
+        name='notify-payments',
+    ),
+    path(
+        'my-purchases/',
+        purchases,
+        name='purchases',
+    ),
 ]

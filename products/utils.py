@@ -3,6 +3,7 @@ import requests
 import logging
 import json
 import redis
+import socket
 
 from requests import Request, Session
 
@@ -56,10 +57,17 @@ def send_payu_order(
     url='https://secure.snd.payu.com/api/v2_1/orders',
 ):
     logger.debug('creating new order')
-    notify_url = Site.objects.get_current().domain + reverse('notify-payment')
-
+    notify_url = Site.objects.get_current().domain + reverse('notify-payments')
+    continue_url = ''
+    if request.is_secure():
+        continue_url += 'https://'
+    else:
+        continue_url += 'http://'
+    continue_url += Site.objects.get_current().domain + reverse('purchases')+"?payUResponse=1"
+    print(f'notfiy_url: {notify_url}')
     payload = json.dumps({
         "notifyUrl": notify_url,
+        "continueUrl": continue_url,
         "customerIp": order.customer_ip,
         "merchantPosId": str(settings.PAYU_POS_ID),
         "description": order.product.desc,

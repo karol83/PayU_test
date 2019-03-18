@@ -69,3 +69,12 @@ class Order(models.Model):
     def add_purches_to_user(self):
         self.user.products += self.product
         self.user.save()
+
+    def get_product_name(self):
+        return self.product.name
+
+    def get_product_price(self):
+        return self.product.price / 100
+
+    def get_product_description(self):
+        return self.product.desc
