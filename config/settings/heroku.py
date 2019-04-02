@@ -1,6 +1,7 @@
 from .base import *  # noqa
 from .base import env
 import django_heroku
+import dj_database_url
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -11,9 +12,10 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['example.com'])
 
 # DATABASES
 # ------------------------------------------------------------------------------
-DATABASES['default'] = env.db('DATABASE_URL')  # noqa F405
-DATABASES['default']['ATOMIC_REQUESTS'] = True  # noqa F405
-DATABASES['default']['CONN_MAX_AGE'] = env.int('CONN_MAX_AGE', default=60)  # noqa F405
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True) # noqa F405
+# DATABASES['default'] = env.db('DATABASE_URL')  # noqa F405
+# DATABASES['default']['ATOMIC_REQUESTS'] = True  # noqa F405
+# DATABASES['default']['CONN_MAX_AGE'] = env.int('CONN_MAX_AGE', default=60)  # noqa F405
 
 # CACHES
 # ------------------------------------------------------------------------------
@@ -178,3 +180,11 @@ LOGGING = {
 
     }
 }
+
+# Heroku related
+# -----------------------------------------------------------------------------
+
+django_heroku.settings(locals())
+
+# Your stuff...
+# ------------------------------------------------------------------------------

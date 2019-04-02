@@ -71,6 +71,7 @@ LOCAL_APPS = [
     'payu_test_payments.users.apps.UsersAppConfig',
     'products',
     # Your stuff: custom apps go here
+    # 'payu_test_payments.products.apps.ProductsConfig',
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -269,6 +270,6 @@ SOCIALACCOUNT_ADAPTER = 'payu_test_payments.users.adapters.SocialAccountAdapter'
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-PAYU_POS_ID = env('PAYU_POS_ID_VALUE')
+PAYU_POS_ID = env('PAYU_POS_ID')
 PAYU_CLIENT_ID = env('PAYU_CLIENT_ID')
 PAYU_CLIENT_SECRET = env('PAYU_CLIENT_SECRET')

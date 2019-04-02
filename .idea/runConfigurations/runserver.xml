@@ -9,10 +9,13 @@
       <env name="DATABASE_URL" value="postgres://postgres:test_payu@127.0.0.1:5432/payu_test_payments" />
       <env name="CELERY_BROKER_URL" value="redis://localhost:6379/0" />
       <env name="USE_DOCKER" value="True" />
+      <env name="PAYU_POS_ID" value="354544" />
+      <env name="PAYU_CLIENT_ID" value="354544" />
+      <env name="PAYU_CLIENT_SECRET" value="93d278de2cdb1904d44f3d46a6359738" />
     </envs>
-    <option name="SDK_HOME" value="" />
+    <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-    <option name="IS_MODULE_SDK" value="true" />
+    <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <option name="launchJavascriptDebuger" value="false" />

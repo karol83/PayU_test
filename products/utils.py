@@ -64,7 +64,7 @@ def send_payu_order(
     else:
         continue_url += 'http://'
     continue_url += Site.objects.get_current().domain + reverse('purchases')+"?payUResponse=1"
-    print(f'notfiy_url: {notify_url}')
+    print(f'notfiy_url: {notify_url}, continue_url: {continue_url}')
     payload = json.dumps({
         "notifyUrl": notify_url,
         "continueUrl": continue_url,
@@ -99,7 +99,7 @@ def send_payu_order(
         "content-type": "application/json",
         "Authorization": authorization_bearer,
     }
-
+    print(payload)
     response = requests.post(
         url=url,
         data=payload,

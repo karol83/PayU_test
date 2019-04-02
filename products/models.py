@@ -4,6 +4,7 @@ import uuid
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 
 
 class Product(models.Model):
@@ -30,6 +31,10 @@ PAYMENT_STATUS = (
     ('COMPLETED', _('COMPLETED')),
     ('REJECTED', _('REJECTED'))
 )
+
+
+def notify_url_default():
+    return reverse('notify-payments')
 
 
 class Order(models.Model):
@@ -65,6 +70,7 @@ class Order(models.Model):
         null=True,
         default=None
     )
+    notify_url = models.URLField(default=notify_url_default)
 
     def add_purches_to_user(self):
         self.user.products += self.product

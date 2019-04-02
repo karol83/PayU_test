@@ -32,9 +32,10 @@ TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # noqa F405
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-host
-EMAIL_HOST = env('EMAIL_HOST', default='mailhog')
+# EMAIL_HOST = env('EMAIL_HOST', default='mailhog')
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-port
-EMAIL_PORT = 1025
+# EMAIL_PORT = 1025
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
@@ -76,6 +77,9 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': 'app_debug.log',
         },
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
     },
     'loggers': {
         # 'django': {
@@ -84,7 +88,7 @@ LOGGING = {
         #     'propagate': True,
         # },
         'products': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
         },

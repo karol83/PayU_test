@@ -24,4 +24,5 @@ urlpatterns = [
         purchases,
         name='purchases',
     ),
+
 ]
