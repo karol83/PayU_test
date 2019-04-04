@@ -5,9 +5,9 @@ from .views import ProductDetailView, \
 
 urlpatterns = [
     path(
-        'confirm-purchase/<pk>/',
+        'view-product-details/<pk>/',
         ProductDetailView.as_view(),
-        name='confirm-purchase'
+        name='view-product-details'
     ),
     path(
         'buy/<product_id>/',
