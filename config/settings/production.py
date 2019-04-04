@@ -3,6 +3,9 @@ from .base import *  # noqa
 from .base import env
 import django_heroku
 
+
+DEBUG = True
+
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
@@ -176,5 +179,3 @@ LOGGING = {
 
     }
 }
-
-DEBUG = True
