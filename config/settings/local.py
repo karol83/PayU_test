@@ -12,6 +12,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "0.0.0.0",
     "127.0.0.1",
+    "django-env.qikmc6sunc.us-west-2.elasticbeanstalk.com",
 ]
 
 # CACHES
