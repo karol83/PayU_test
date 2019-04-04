@@ -175,3 +175,5 @@ LOGGING = {
 
     }
 }
+
+DEBUG = True
